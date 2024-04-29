@@ -149,4 +149,5 @@ if __name__ == "__main__":
         sharrow="require",
         recode_pipeline_columns=True,
         memory_profile=True,
+        chunk_training_mode="explicit",
     )

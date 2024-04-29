@@ -11,3 +11,5 @@ CONSTANTS:
   maximum_walk_distance: 3.0
   # perceived minute of in-vehicle time for every minute of out-of-vehicle time
   out_of_vehicle_time_weight: 2.0
+
+explicit_chunk: 812  # 24333 zones in 30 chunks
