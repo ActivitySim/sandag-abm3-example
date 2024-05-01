@@ -19,8 +19,8 @@ logging:
       handlers: [console, logfile]
       propagate: false
 
-    orca:
-      level: WARN
+    sharrow:
+      level: INFO
       handlers: [console, logfile]
       propagate: false
 
