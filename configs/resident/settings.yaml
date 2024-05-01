@@ -135,6 +135,7 @@ models:
   - compute_disaggregate_accessibility
   ### mp_initialize_hhs (single process)
   - initialize_landuse
+  - initialize_landuse_taz
   - initialize_households
   ### mp_accessibility
   - compute_accessibility

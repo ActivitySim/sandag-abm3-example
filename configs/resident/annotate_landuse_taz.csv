@@ -1,0 +1,2 @@
+Description,Target,Expression
+micro access time at taz,taz_microAccTime,"land_use.sort_values(by='MicroAccessTime',ascending=False).drop_duplicates('TAZ',keep='first').set_index('TAZ')['MicroAccessTime'].reindex(df.index)"

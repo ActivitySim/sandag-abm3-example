@@ -1,0 +1,7 @@
+annotate_tables:
+  - tablename: land_use_taz
+    annotate:
+      SPEC: annotate_landuse_taz
+      DF: land_use_taz
+      TABLES:
+        - land_use
