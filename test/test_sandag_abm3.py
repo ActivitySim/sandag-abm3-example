@@ -42,6 +42,7 @@ EXPECTED_MODELS = [
     "initialize_proto_population",
     "compute_disaggregate_accessibility",
     "initialize_landuse",
+    "initialize_landuse_taz",
     "initialize_households",
     "compute_accessibility",
     "av_ownership",
@@ -135,7 +136,7 @@ def test_sandag_abm3_progressive(use_sharrow):
 
     tags = "".join(tags)
     ref_pipeline = Path(__file__).parent.joinpath(
-        f"regress/reference-pipeline{tags}.zip"
+        f"regress/reference-pipeline{tags}.parquetpipeline"
     )
 
     for step_name in EXPECTED_MODELS:
@@ -156,9 +157,14 @@ def test_sandag_abm3_progressive(use_sharrow):
         # make new reference pipeline file if it is missing
         import shutil
 
-        shutil.make_archive(
-            ref_pipeline.with_suffix(""), "zip", state.checkpoint.store.filename
-        )
+        if ref_pipeline.suffix == ".zip":
+            shutil.make_archive(
+                ref_pipeline.with_suffix(""), "zip", state.checkpoint.store.filename
+            )
+        else:
+            shutil.copytree(state.checkpoint.store.filename, ref_pipeline)
+            if (ref_pipeline / ".gitignore").exists():
+                os.remove(ref_pipeline / ".gitignore")
 
 
 if __name__ == "__main__":
