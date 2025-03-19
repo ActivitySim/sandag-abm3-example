@@ -69,8 +69,8 @@ jobs:
           python -m pip install ./activitysim --no-deps
       - name: Conda checkup
         run: |
-          mamba info -a
-          mamba list
+          conda info -a
+          conda list
       - name: Test this implementation
         run: |
           cd activitysim-sandag-abm3/test
