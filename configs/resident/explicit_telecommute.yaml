@@ -1,10 +1,6 @@
-
-# borrowed from work from home model
-
 SPEC: explicit_telecommute.csv
 COEFFICIENTS: explicit_telecommute_coeffs.csv
 
-#LOGIT_TYPE: NL
 LOGIT_TYPE: MNL
 
 TELECOMMUTE_ALT: 0
