@@ -179,7 +179,7 @@ models:
   - transponder_ownership
   - free_parking
   - telecommute_frequency
-  - explicit_telecommute
+  - telecommute_status
   - cdap_simulate
   - mandatory_tour_frequency
   - mandatory_tour_scheduling
