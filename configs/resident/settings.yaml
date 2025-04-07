@@ -211,6 +211,7 @@ models:
   - write_data_dictionary
   - track_skim_usage
   - write_trip_matrices
+  - update_tables
   - write_tables
 
 # These skim tables are included in the model as two sets, one as
