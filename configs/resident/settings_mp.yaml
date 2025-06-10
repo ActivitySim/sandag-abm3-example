@@ -15,7 +15,9 @@ memory_profile: False
 # (Shadow pricing requires fail_fast setting in multiprocessing mode)
 fail_fast: True
 
-resume_after: 
+resume_after:
+
+check_model_settings: True
 
 models:
   ### mp_init_proto_pop (single process)
