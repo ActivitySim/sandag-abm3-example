@@ -39,12 +39,13 @@ jobs:
       - name: Setup Miniforge
         uses: conda-incubator/setup-miniconda@v3
         with:
-            auto-update-conda: true
-            miniforge-version: latest
-            conda-solver: classic
-            conda-remove-defaults: true
-            activate-environment: asim-test
-            python-version: ${{ matrix.python-version }}
+          auto-update-conda: true
+          miniforge-version: latest
+          mamba-version: "2.0.5"
+          conda-solver: classic
+          conda-remove-defaults: true
+          activate-environment: asim-test
+          python-version: ${{ matrix.python-version }}
 
       - name: Set cache date for year and month
         run: echo "DATE=$(date +'%Y%m')" >> $GITHUB_ENV
