@@ -39,54 +39,6 @@ wheels = [
 ]
 
 [[package]]
-name = "activitysim-prototype-mtc"
-version = "1.4"
-source = { virtual = "." }
-dependencies = [
-    { name = "activitysim" },
-    { name = "multimethod" },
-    { name = "numba" },
-    { name = "numpy" },
-    { name = "openmatrix" },
-    { name = "pandas" },
-    { name = "pandera" },
-    { name = "psutil" },
-    { name = "pydantic" },
-    { name = "setuptools" },
-    { name = "sharrow" },
-    { name = "tables", version = "3.10.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
-    { name = "tables", version = "3.10.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "pytest" },
-    { name = "zstandard" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "activitysim", specifier = "==1.4" },
-    { name = "multimethod", specifier = "<2.0" },
-    { name = "numba", specifier = ">=0.57" },
-    { name = "numpy", specifier = ">=1.16.1,<1.26" },
-    { name = "openmatrix", specifier = ">=0.3.5.0" },
-    { name = "pandas", specifier = ">=2.1.0" },
-    { name = "pandera", specifier = ">=0.15,<0.18.1" },
-    { name = "psutil", specifier = ">=4.1" },
-    { name = "pydantic", specifier = ">=2.6" },
-    { name = "setuptools", specifier = ">=80.9.0,<81" },
-    { name = "sharrow", specifier = ">=2.14.0" },
-    { name = "tables", specifier = ">=3.9" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "pytest", specifier = ">=8.4.1" },
-    { name = "zstandard", specifier = ">=0.23.0" },
-]
-
-[[package]]
 name = "aniso8601"
 version = "10.0.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1317,6 +1269,54 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/f0/ca/e4106ac7e80efbabdf4bf91d3d32fc424e41418458251712f5672eada9ce/ruamel.yaml.clib-0.2.12-cp311-cp311-musllinux_1_2_aarch64.whl", hash = "sha256:1492a6051dab8d912fc2adeef0e8c72216b24d57bd896ea607cb90bb0c4981d3", size = 714498, upload-time = "2024-12-11T19:58:15.592Z" },
     { url = "https://files.pythonhosted.org/packages/67/58/b1f60a1d591b771298ffa0428237afb092c7f29ae23bad93420b1eb10703/ruamel.yaml.clib-0.2.12-cp311-cp311-win32.whl", hash = "sha256:bd0a08f0bab19093c54e18a14a10b4322e1eacc5217056f3c063bd2f59853ce4", size = 100205, upload-time = "2024-10-20T10:12:52.865Z" },
     { url = "https://files.pythonhosted.org/packages/b4/4f/b52f634c9548a9291a70dfce26ca7ebce388235c93588a1068028ea23fcc/ruamel.yaml.clib-0.2.12-cp311-cp311-win_amd64.whl", hash = "sha256:a274fb2cb086c7a3dea4322ec27f4cb5cc4b6298adb583ab0e211a4682f241eb", size = 118185, upload-time = "2024-10-20T10:12:54.652Z" },
+]
+
+[[package]]
+name = "sandag-abm3-example"
+version = "1.4"
+source = { virtual = "." }
+dependencies = [
+    { name = "activitysim" },
+    { name = "multimethod" },
+    { name = "numba" },
+    { name = "numpy" },
+    { name = "openmatrix" },
+    { name = "pandas" },
+    { name = "pandera" },
+    { name = "psutil" },
+    { name = "pydantic" },
+    { name = "setuptools" },
+    { name = "sharrow" },
+    { name = "tables", version = "3.10.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
+    { name = "tables", version = "3.10.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "pytest" },
+    { name = "zstandard" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "activitysim", specifier = "==1.4" },
+    { name = "multimethod", specifier = "<2.0" },
+    { name = "numba", specifier = ">=0.57" },
+    { name = "numpy", specifier = ">=1.16.1,<1.26" },
+    { name = "openmatrix", specifier = ">=0.3.5.0" },
+    { name = "pandas", specifier = ">=2.1.0" },
+    { name = "pandera", specifier = ">=0.15,<0.18.1" },
+    { name = "psutil", specifier = ">=4.1" },
+    { name = "pydantic", specifier = ">=2.6" },
+    { name = "setuptools", specifier = ">=80.9.0,<81" },
+    { name = "sharrow", specifier = ">=2.14.0" },
+    { name = "tables", specifier = ">=3.9" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pytest", specifier = ">=8.4.1" },
+    { name = "zstandard", specifier = ">=0.23.0" },
 ]
 
 [[package]]
