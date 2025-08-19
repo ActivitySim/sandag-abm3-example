@@ -55,6 +55,5 @@ jobs:
 
       - name: Test this implementation
         run: |
-          cd ./test
-          python -m pytest test_sandag_abm3.py::test_sandag_abm3_progressive
+          uv run pytest ./test
           
