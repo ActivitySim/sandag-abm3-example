@@ -8,17 +8,6 @@ NO_EXTERNAL: 0
 # set below to be 1 for years before 2021, 0 otherwise
 PRE_COVID: 0
 
-walk_speed: 3 #mph
-
-#HHT_NONE: 0
-#HHT_FAMILY_MARRIED: 1
-#HHT_FAMILY_MALE: 2
-#HHT_FAMILY_FEMALE: 3
-#HHT_NONFAMILY_MALE_ALONE: 4
-#HHT_NONFAMILY_MALE_NOTALONE: 5
-#HHT_NONFAMILY_FEMALE_ALONE: 6
-#HHT_NONFAMILY_FEMALE_NOTALONE: 7
-
 # convenience for expression files
 HHT_NONFAMILY: [4, 5, 6, 7]
 HHT_FAMILY: [1, 2, 3]
@@ -94,7 +83,7 @@ distributed_time_factor_max: 10
 
 c_drive: 1.5
 
-useAV: 0
+AV_OWNERSHIP_TARGET_PERCENT: 0.0
 autoIVTFactorAV: 0.75
 autoParkingCostFactorAV: 0.5
 autoCostPerMileFactorAV: 0.7
@@ -103,7 +92,7 @@ minAgeDriveAloneAV: 13
 
 
 #valueOfTime: 8.00
-costPerMile: 18.29
+costPerMile: 32.5
 costShareSr2: 1.75
 costShareSr3: 2.50
 waitThresh: 10.00
@@ -111,25 +100,12 @@ walkThresh: 1.50
 shortWalk: 0.333
 longWalk: 0.667
 walkSpeed: 3.00
-bikeThresh: 6.00
 bikeSpeed: 7.80
 ebikeSpeed: 10.00
 escooterSpeed: 6.70
 driveSpeed: 25.00
 maxCbdAreaTypeThresh: 2
 indivTour: 1.00000
-
-#### [NICK] WHAT ARE THESE? DO WE EVEN NEED THESE?
-upperEA: 5
-upperAM: 10
-upperMD: 15
-upperPM: 19
-
-# SHOULD IT BE THIS?
-# upperEA: 6
-# upperAM: 12
-# upperMD: 25
-# upperPM: 32
 
 ### Crosswalk between SOC codes and SANDAG occupation classification
 soc_occupation_xwalk:
@@ -159,9 +135,9 @@ soc_occupation_xwalk:
   99:  # 99 -  Non-workers, Code not part of SOC system
 
 # RIDEHAIL Settings
-Taxi_baseFare: 2.20
-Taxi_costPerMile: 2.30
-Taxi_costPerMinute: 0.10
+Taxi_baseFare: 3.00
+Taxi_costPerMile: 3.3
+Taxi_costPerMinute: 0.46
 Taxi_waitTime_mean:
   1: 5.5
   2: 9.5
@@ -175,10 +151,10 @@ Taxi_waitTime_sd:
   3: 6.4
   4: 6.4
   5: 6.4
-TNC_single_baseFare: 2.20
-TNC_single_costPerMile: 1.33
-TNC_single_costPerMinute: 0.24
-TNC_single_costMinimum: 7.20
+TNC_single_baseFare: 3.31
+TNC_single_costPerMile: 0.96
+TNC_single_costPerMinute: 0.33
+TNC_single_costMinimum: 9.19
 TNC_single_waitTime_mean:
   1: 3.0
   2: 6.3
@@ -191,10 +167,10 @@ TNC_single_waitTime_sd:
   3: 4.1
   4: 4.1
   5: 4.1
-TNC_shared_baseFare: 2.20
-TNC_shared_costPerMile: 0.53
-TNC_shared_costPerMinute: 0.10
-TNC_shared_costMinimum: 3.00
+TNC_shared_baseFare: 1.66
+TNC_shared_costPerMile: 0.48
+TNC_shared_costPerMinute: 0.16
+TNC_shared_costMinimum: 4.6
 TNC_shared_IVTFactor: 1.5
 TNC_shared_waitTime_mean:
   1: 5.0
@@ -211,15 +187,18 @@ TNC_shared_waitTime_sd:
 min_waitTime: 0
 max_waitTime: 50
 
-ivt_lrt_multiplier: 0.65
+# rapid bus wait time discount
+WAIT_TIME_DISC: 1.0
+
+ivt_lrt_multiplier: 0.85
 ivt_brt_multiplier: 0.95
-ivt_cmr_multiplier: 0.65
+ivt_cmr_multiplier: 0.85
 ivt_ltd_multiplier: 1.0
 ivt_cost_multiplier: 0.6
 # line-haul mode constants; note commuter rail is based on CMRIVTT. Also currently hyperloop is not applied because we do not skim hyperloop IVTT
 eb_equiv_asc: 10
 brt_equiv_asc: -5
-lrt_equiv_asc: -20
+lrt_equiv_asc: -30
 hyp_equiv_asc: -20
 pnr_lrt_equiv_asc: -20
 #
@@ -263,10 +242,9 @@ torrypines_maz: 4093
 
 # Micromobility constants
 microSpeed: 12
-microVarCost: 20 #cents
+microVarCost: 39 #cents
 microFixedCost: 100 #cents
 microRentTime: 1
-microConstant: 60
 microAccessThreshold: 100
 ebikeownership: 0.008
 ebikeMaxDist: 10.50
@@ -277,20 +255,46 @@ microtransitSpeed: 30
 microtransitCost: 125 #cents
 microtransitWaitTime: 12
 microtransitMaxDist: 4.5
-microtransitDiversionConstant: 5
+microtransitDiversionConstant: 6
 microtransitDiversionFactor: 1.25
+microtransitStartPeriod: 9
+microtransitEndPeriod: 32
 nevSpeed: 17
 nevCost: 125 #cents
 nevWaitTime: 12
 nevMaxDist: 3
 nevDwellMinutesPerMile: 0.5
-nevDiversionConstant: 5
+nevDiversionConstant: 6
 nevDiversionFactor: 1.25
-maxWalkIfMTAccessAvailable: 0.5 # Maximum distance to walk to premium transit if microtransit access is available
+nevStartPeriod: 9
+nevEndPeriod: 38
+maxWalkIfMTAccessAvailable: 1.0 # Maximum distance to walk to premium transit if microtransit access is available
 
 # cost of "average" monthly transit pass cost.  Used in transit pass ownership model.
 # cost of pass divided by 2 for age < 18 and 65+.
 monthly_transit_pass_cost: 100
 
 # year after which a vehicle (therefore its household) must have transponder
-hhTR_Vehyear: 2035
+hhTR_Vehyear: 2029
+
+# SHARED2 and SHARED3 Occupancies
+OCC_SHARED2: 2.0
+OCC_SHARED3: 3.33
+# add TNC and Taxi Occupancies
+OCC_TAXI: 1.1
+OCC_TNC_SINGLE: 1.2
+OCC_TNC_SHARED: 2.0
+
+# EV Rebate constants
+LowIncomeEVRebateCutoff: 3
+MedIncomeEVRebateCutoff: 4
+LowIncomeBEVRebate: 0
+LowIncomePEVRebate: 0
+MedIncomeBEVRebate: 0
+MedIncomePEVRebate: 0
+
+# MGRAs for Ports of Entry
+SanYsidro_maz_id: 9279
+OtayMesa_maz_id: 9387
+Tecate_maz_id: 22324
+OtayMesaEast_maz_id: 7123
