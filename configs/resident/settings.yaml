@@ -55,6 +55,7 @@ input_table_list:
       - num_workers
       - bldgsz
       - unittype
+      - poverty
   - tablename: persons
     filename: persons.csv
     index_col: person_id
@@ -181,6 +182,7 @@ models:
   - transponder_ownership
   - free_parking
   - telecommute_frequency
+  - telecommute_status
   - cdap_simulate
   - mandatory_tour_frequency
   - mandatory_tour_scheduling
