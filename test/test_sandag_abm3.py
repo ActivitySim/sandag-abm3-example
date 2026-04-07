@@ -168,8 +168,6 @@ def test_sandag_abm3_progressive(use_sharrow):
 
     if not ref_pipeline.exists():
         # make new reference pipeline file if it is missing
-        import shutil
-
         if ref_pipeline.suffix == ".zip":
             shutil.make_archive(
                 ref_pipeline.with_suffix(""), "zip", state.checkpoint.store.filename
