@@ -106,6 +106,10 @@ EXPECTED_MODELS = [
     "write_tables",
 ]
 
+def test_asim_tracker():
+    import activitysim.abm  # register components # noqa: F401
+    assert activitysim._tracker == 1
+    assert activitysim.abm._tracker == 2
 
 @pytest.mark.parametrize("use_sharrow", [False, True])
 def test_sandag_abm3_progressive(use_sharrow):
@@ -157,7 +161,17 @@ def test_sandag_abm3_progressive(use_sharrow):
         if ref_pipeline.exists():
             try:
                 # The usual default rtol=1e-5 is too strict for cross-platform testing
-                state.checkpoint.check_against(ref_pipeline, checkpoint_name=step_name, rtol=1e-4)
+                try:
+                    state.checkpoint.check_against(ref_pipeline, checkpoint_name=step_name, rtol=1e-4)
+                except FileNotFoundError as err:
+                    missing_location = Path(str(err))
+                    computed_source = state.checkpoint.store.filename / missing_location.relative_to(missing_location.parents[1])
+                    if missing_location.parents[1].is_dir():
+                        missing_location.parents[0].mkdir(parents=True, exist_ok=True)
+                        shutil.copy(computed_source, missing_location)
+                        raise RuntimeError(f"> sandag-abm3 {step_name}: MISSING FILE REPLACED @ {missing_location}") from err
+                    raise err
+
             except Exception:
                 print(f"> sandag-abm3 {step_name}: ERROR")
                 raise

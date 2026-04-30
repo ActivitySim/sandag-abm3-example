@@ -96,3 +96,9 @@ def get_full_data(full_data_dir):
     # write a gitignore to the full data dir to avoid accidental commits
     if not full_data_dir.joinpath(".gitignore").exists():
         full_data_dir.joinpath(".gitignore").write_text("**\n")
+
+
+if __name__ == "__main__":
+    import pathlib
+
+    get_full_data(pathlib.Path("/tmp/sandag-abm3-example"))

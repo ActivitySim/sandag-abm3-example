@@ -8,8 +8,8 @@ resolution-markers = [
 
 [[package]]
 name = "activitysim"
-version = "1.5.2.dev8+g0c0f77eac"
-source = { git = "https://github.com/ActivitySim/ActivitySim?branch=main#0c0f77eacdacbd926a224a3543b374a8e35a8c53" }
+version = "1.5.1"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cytoolz" },
     { name = "multimethod" },
@@ -32,6 +32,10 @@ dependencies = [
     { name = "tables", version = "3.10.1", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "tables", version = "3.10.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "xarray" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/84/37/674c3f7b81bebee330621eb44b1d67d21331b6245e5266f792943b3ee607/activitysim-1.5.1.tar.gz", hash = "sha256:d36fc72db5ee456a7e39ab829ff170b5b3ab447b25346989f8eea7a50e501c11", size = 94576678, upload-time = "2025-11-13T20:25:56.225Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f7/a2/cd685f0b0b5b2093fe77691ec7bcee67133ec6135a86cb083808f9cc2ccc/activitysim-1.5.1-py3-none-any.whl", hash = "sha256:3c27b141f5d2cce56e5f390918c47ae6cfae82adc92ec35f384f7c0c6bc5f962", size = 91984937, upload-time = "2025-11-13T20:25:52.257Z" },
 ]
 
 [[package]]
@@ -983,7 +987,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "activitysim", git = "https://github.com/ActivitySim/ActivitySim?branch=main" },
+    { name = "activitysim", specifier = ">=1.5" },
     { name = "multimethod", specifier = "<2.0" },
     { name = "numba", specifier = ">=0.57" },
     { name = "numpy", specifier = ">=1.16.1,<1.26" },
