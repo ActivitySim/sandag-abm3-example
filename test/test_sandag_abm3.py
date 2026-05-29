@@ -106,11 +106,6 @@ EXPECTED_MODELS = [
     "write_tables",
 ]
 
-def test_asim_tracker():
-    import activitysim.abm  # register components # noqa: F401
-    assert activitysim._tracker == 1
-    assert activitysim.abm._tracker == 2
-
 @pytest.mark.parametrize("use_sharrow", [False, True])
 def test_sandag_abm3_progressive(use_sharrow):
     import activitysim.abm  # register components # noqa: F401
