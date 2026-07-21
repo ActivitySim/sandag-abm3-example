@@ -3,11 +3,7 @@ from .external_identification import ExternalIdentificationSettings
 from .transponder_ownership import TransponderOwnershipSettings
 
 from activitysim.core.configuration.base import PydanticReadable
-from activitysim.core.configuration.logit import (
-    TourLocationComponentSettings,
-    TourModeComponentSettings,
-)
-from activitysim.core.workflow import State
+from activitysim.core.configuration.logit import TourLocationComponentSettings
 
 
 
@@ -29,7 +25,7 @@ EXTENSION_CHECKER_SETTINGS = {
         "settings_cls": ExternalIdentificationSettings,
         "settings_file": "external_student_identification.yaml"
     },
-    "external_non_mandatory_tour_identification": {
+    "external_non_mandatory_identification": {
         "settings_cls": ExternalIdentificationSettings,
         "settings_file": "external_non_mandatory_identification.yaml"
     },
