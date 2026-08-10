@@ -3,7 +3,7 @@ run:
   calibrate_models:
     - workplace_location
     - auto_ownership_simulate
-    # - tour_mode_choice_simulate
+    - tour_mode_choice_simulate
   global_iterations: 2
   
 cleanup_pipeline_after_run: false

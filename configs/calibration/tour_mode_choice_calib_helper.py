@@ -37,27 +37,19 @@ def report_tour_mode_choice(context):
     plt.close()
 
 
-def get_tour_group(tour_df: pd.DataFrame, person_df: pd.DataFrame) -> pd.Series:
+def get_tour_group(tour_df: pd.DataFrame, person_df: pd.DataFrame = None) -> pd.Series:
     ret_series = pd.Series(index=tour_df.index, dtype=str)
-    ret_series.loc[
-        tour_df.primary_purpose.isin(["othmaint", "othdiscr"])
-    ] = tour_df.loc[
-        tour_df.primary_purpose.isin(["othmaint", "othdiscr"])
-    ].primary_purpose.str[
-        3:
-    ]
+    ret_series.loc[tour_df.primary_purpose == "othmaint"] = "maint"
+    ret_series.loc[tour_df.primary_purpose == "othdiscr"] = "disc"
     ret_series.loc[
         tour_df.primary_purpose.isin(["shopping", "escort"])
     ] = "maint"
     ret_series.loc[tour_df.primary_purpose.isin(["work", "atwork"])] = tour_df.loc[
         tour_df.primary_purpose.isin(["work", "atwork"])
     ].primary_purpose
-    ret_series.loc[tour_df.primary_purpose.isin(["eatout", "social"])] = "discr"
-    ret_series.loc[tour_df.primary_purpose == "school"] = (
-        tour_df.loc[tour_df.primary_purpose == "school"]
-        .person_id.map(person_df.is_university)
-        .map({True: "univ", False: "school"})
-    )
+    ret_series.loc[tour_df.primary_purpose.isin(["eatout", "social"])] = "disc"
+    ret_series.loc[tour_df.primary_purpose == "univ"] = "univ"
+    ret_series.loc[tour_df.primary_purpose == "school"] = "school"
 
     assert (
         not ret_series.isna().any()
