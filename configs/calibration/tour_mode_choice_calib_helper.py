@@ -39,20 +39,20 @@ def report_tour_mode_choice(context):
 
 def get_tour_group(tour_df: pd.DataFrame, person_df: pd.DataFrame = None) -> pd.Series:
     ret_series = pd.Series(index=tour_df.index, dtype=str)
-    ret_series.loc[tour_df.primary_purpose == "othmaint"] = "maint"
-    ret_series.loc[tour_df.primary_purpose == "othdiscr"] = "disc"
+    ret_series.loc[tour_df.tour_type == "othmaint"] = "maint"
+    ret_series.loc[tour_df.tour_type == "othdiscr"] = "disc"
     ret_series.loc[
-        tour_df.primary_purpose.isin(["shopping", "escort"])
+        tour_df.tour_type.isin(["shopping", "escort"])
     ] = "maint"
-    ret_series.loc[tour_df.primary_purpose.isin(["work", "atwork"])] = tour_df.loc[
-        tour_df.primary_purpose.isin(["work", "atwork"])
-    ].primary_purpose
-    ret_series.loc[tour_df.primary_purpose.isin(["eatout", "social"])] = "disc"
-    ret_series.loc[tour_df.primary_purpose == "univ"] = "univ"
-    ret_series.loc[tour_df.primary_purpose == "school"] = "school"
+    ret_series.loc[tour_df.tour_type.isin(["work", "atwork"])] = tour_df.loc[
+        tour_df.tour_type.isin(["work", "atwork"])
+    ].tour_type
+    ret_series.loc[tour_df.tour_type.isin(["eatout", "social"])] = "disc"
+    ret_series.loc[tour_df.tour_type == "univ"] = "univ"
+    ret_series.loc[tour_df.tour_type == "school"] = "school"
 
     assert (
         not ret_series.isna().any()
-    ), f"Tour group could not be determined for some tours:\n{tour_df.loc[ret_series.isna(),['tour_id','person_id','primary_purpose']]}"
+    ), f"Tour group could not be determined for some tours:\n{tour_df.loc[ret_series.isna(),['tour_id','person_id','tour_type']]}"
 
     return ret_series
