@@ -805,6 +805,12 @@ coef_calib_za_ESCOOTER_school,0.0,T
 coef_calib_za_ESCOOTER_maint,0.0,T
 coef_calib_za_ESCOOTER_disc,0.0,T
 coef_calib_za_ESCOOTER_atwork,0.0,T
+coef_calib_za_WLK_TRN_work,0.0,T
+coef_calib_za_WLK_TRN_univ,0.0,T
+coef_calib_za_WLK_TRN_school,0.0,T
+coef_calib_za_WLK_TRN_maint,0.0,T
+coef_calib_za_WLK_TRN_disc,0.0,T
+coef_calib_za_WLK_TRN_atwork,0.0,T
 coef_calib_za_KNR_TRN_work,0.0,T
 coef_calib_za_KNR_TRN_univ,0.0,T
 coef_calib_za_KNR_TRN_school,0.0,T
