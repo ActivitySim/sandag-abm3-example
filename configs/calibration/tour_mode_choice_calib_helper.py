@@ -71,7 +71,7 @@ def get_targets() -> pd.DataFrame:
     targets = pd.read_csv(TOUR_MODE_TARGETS)
     return targets
 
-@lru_cache()
+
 def prepare_model_tours(context) -> pd.DataFrame:
     """
     Adds a ``tour_purp_group`` column to the model tours dataframe, grouping
@@ -105,7 +105,7 @@ def prepare_model_tours(context) -> pd.DataFrame:
 
 
     # code the tour mode groupings that are defined in the targets file
-    tours['tour_mode_group'] = tours["tour_mode"].copy()  # auto and non-motorized modes have same coding in targets
+    tours['tour_mode_group'] = tours["tour_mode"].astype(str).copy()  # auto and non-motorized modes have same coding in targets
     tours.loc[tours.tour_mode.isin(["WALK_LOC", "WALK_PRM", "WLK_MIX"]), "tour_mode_group"] = "WALK-TRANSIT"
     tours.loc[tours.tour_mode.isin(["PNR_LOC", "PNR_PRM", "PNR_MIX"]), "tour_mode_group"] = "PNR-TRANSIT"
     tours.loc[tours.tour_mode.isin(["KNR_LOC", "KNR_PRM", "KNR_MIX"]), "tour_mode_group"] = "KNR-TRANSIT"
@@ -198,7 +198,7 @@ def get_target_value(context, mode, auto_suff, purpose):
         The tour purpose group (e.g. "Work", "Ind-Maintenance",
         "Joint-Discretionary")
     """
-    tours = prepare_model_tours(context, context["tours"])
+    tours = prepare_model_tours(context)
     targets = get_targets()
 
     num_model_tours = (
@@ -221,6 +221,9 @@ def get_target_value(context, mode, auto_suff, purpose):
     ]["tours"].sum()
 
     scale_factor = (num_model_tours - num_transit_target_tours) / num_non_transit_target_tours
+
+    if num_non_transit_target_tours == 0:
+        scale_factor = 1.0
 
     # do not scale transit tours under the assumption we want the exact number
     # of transit tours to match the target.  This is under the assumption that
