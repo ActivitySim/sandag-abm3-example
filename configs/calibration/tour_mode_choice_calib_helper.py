@@ -8,13 +8,37 @@ TOUR_MODE_TARGETS = os.path.join(os.path.dirname(__file__), "tour_mode_choice_ca
 TARGET_TRANSIT_MODES = ["WALK-TRANSIT", "PNR-TRANSIT", "KNR-TRANSIT", "TNC-TRANSIT"]
 
 def report_tour_mode_choice(context):
-    """Plot scaled model tours alongside their scaled calibration targets."""
+    """Plot regular model tours alongside their scaled calibration targets."""
+    _report_tour_mode_choice(
+        context,
+        include_atwork=False,
+        file_name="tour_mode_choice_comparison.png",
+        title="Tour Mode Choice: Scaled Model vs Target Tours",
+    )
+
+
+def report_atwork_tour_mode_choice(context):
+    """Plot at-work subtours alongside their scaled calibration targets."""
+    _report_tour_mode_choice(
+        context,
+        include_atwork=True,
+        file_name="atwork_tour_mode_choice_comparison.png",
+        title="At-work Tour Mode Choice: Scaled Model vs Target Tours",
+    )
+
+
+def _report_tour_mode_choice(context, include_atwork, file_name, title):
+    """Plot the requested tour purposes against their scaled targets."""
     targets = get_targets()
     targets = targets[
         (targets.grouped_tour_mode != "All")
         & (targets.auto_suff != "All")
         & (targets.purpose != "Total")
     ]
+    if include_atwork:
+        targets = targets[targets.purpose == "Work sub-tour"]
+    else:
+        targets = targets[targets.purpose != "Work sub-tour"]
 
     comparison_rows = []
     for target in targets.itertuples(index=False):
@@ -38,13 +62,13 @@ def report_tour_mode_choice(context):
 
     comparison_df = pd.DataFrame(comparison_rows)
     comparison_df.plot(x="category", y=["model", "target"], kind="bar")
-    plt.title("Tour Mode Choice: Scaled Model vs Target Tours")
+    plt.title(title)
     plt.xlabel("Purpose, Auto Sufficiency, and Tour Mode")
     plt.ylabel("Tours")
     plt.legend(title="Data Source")
     plt.tight_layout()
     plt.savefig(
-        os.path.join(context["component_output_dir"], "tour_mode_choice_comparison.png")
+        os.path.join(context["component_output_dir"], file_name)
     )
     plt.close()
 
