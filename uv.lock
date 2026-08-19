@@ -8,8 +8,8 @@ resolution-markers = [
 
 [[package]]
 name = "activitysim"
-version = "1.5.2.dev17+g279e4f9ac"
-source = { git = "https://github.com/ActivitySim/ActivitySim?branch=main#279e4f9acc25d0d204f8ed4b9c44f5b9ce7bd15e" }
+version = "1.5.2.dev30+ge23bb128b"
+source = { git = "https://github.com/ActivitySim/ActivitySim?branch=main#e23bb128b314f5f6f6d24e26334c15edfb88cdc2" }
 dependencies = [
     { name = "cytoolz" },
     { name = "multimethod" },
