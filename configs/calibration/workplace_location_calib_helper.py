@@ -11,7 +11,8 @@ import pandas as pd
 import os
 from functools import lru_cache
 
-SURVEY_DATA_FOLDER = "activitysim/examples/example_estimation/data_sf/survey_data"
+# replace this path with your actual survey data folder path, or use the default test/regress folder for demonstration
+SURVEY_DATA_FOLDER = "test/regress"
 
 
 def compute_distances(context, origins, destinations):
@@ -23,21 +24,27 @@ def compute_distances(context, origins, destinations):
     return distances
 
 
-# @lru_cache(maxsize=1)
+@lru_cache()
 def _survey_persons() -> pd.DataFrame:
     """Load survey persons once per Python process."""
-    return pd.read_csv(os.path.join(SURVEY_DATA_FOLDER, "override_persons.csv"))
+    return pd.read_csv(os.path.join(SURVEY_DATA_FOLDER, "final_persons.csv"))
 
 
-# @lru_cache(maxsize=1)
+@lru_cache()
 def _survey_households() -> pd.DataFrame:
     """Load survey households once per Python process."""
-    return pd.read_csv(os.path.join(SURVEY_DATA_FOLDER, "override_households.csv"))
+    return pd.read_csv(os.path.join(SURVEY_DATA_FOLDER, "final_households.csv"))
 
 
 # @lru_cache(maxsize=1)
 def _survey_worker_distances(context):
     """Compute survey worker distances once and reuse across calibration rows."""
+
+    # look to see if it is already computed and stored in the context
+    dists = context.get("_survey_workplace_distances")
+    if dists is not None:
+        return dists
+    
     survey_persons = _survey_persons()
     survey_workers = survey_persons[survey_persons["workplace_zone_id"] > 0]
     survey_home_zone_ids = _survey_households().set_index("household_id")[
@@ -45,7 +52,12 @@ def _survey_worker_distances(context):
     ]
     survey_home_zone_ids = survey_workers["household_id"].map(survey_home_zone_ids)
     survey_workplace_zone_ids = survey_workers["workplace_zone_id"]
-    return compute_distances(context, survey_home_zone_ids, survey_workplace_zone_ids)
+
+    dists = compute_distances(context, survey_home_zone_ids, survey_workplace_zone_ids)
+
+    # store the computed distances in the context for reuse
+    context["_survey_workplace_distances"] = dists
+    return dists
 
 
 def summarize_model(context, min_dist=1, max_dist=2):
