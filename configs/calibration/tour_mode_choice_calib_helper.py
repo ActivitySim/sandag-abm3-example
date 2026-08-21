@@ -4,31 +4,73 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 
+# use the seaborn visual style bundled with matplotlib (no seaborn dependency needed)
+try:
+    plt.style.use("seaborn-v0_8")
+except OSError:
+    plt.style.use("seaborn")
+
 TOUR_MODE_TARGETS = os.path.join(os.path.dirname(__file__), "tour_mode_choice_calibration_targets.csv")
 TARGET_TRANSIT_MODES = ["WALK-TRANSIT", "PNR-TRANSIT", "KNR-TRANSIT", "TNC-TRANSIT"]
 
 def report_tour_mode_choice(context):
     """Plot regular model tours alongside their scaled calibration targets."""
-    _report_tour_mode_choice(
+    _report_tour_mode_choice_by_auto_suff(
         context,
         include_atwork=False,
         file_name="tour_mode_choice_comparison.png",
         title="Tour Mode Choice: Scaled Model vs Target Tours",
     )
+    _report_tour_mode_choice_by_purpose(
+        context,
+        include_atwork=False,
+        file_name_prefix="tour_mode_choice_comparison",
+        title_prefix="Tour Mode Choice",
+    )
 
 
 def report_atwork_tour_mode_choice(context):
     """Plot at-work subtours alongside their scaled calibration targets."""
-    _report_tour_mode_choice(
+    _report_tour_mode_choice_by_auto_suff(
         context,
         include_atwork=True,
         file_name="atwork_tour_mode_choice_comparison.png",
         title="At-work Tour Mode Choice: Scaled Model vs Target Tours",
     )
+    _report_tour_mode_choice_by_purpose(
+        context,
+        include_atwork=True,
+        file_name_prefix="atwork_tour_mode_choice_comparison",
+        title_prefix="At-work Tour Mode Choice",
+    )
 
 
-def _report_tour_mode_choice(context, include_atwork, file_name, title):
-    """Plot the requested tour purposes against their scaled targets."""
+def _grouped_barplot(data, x, y, hue, ax=None):
+    """Grouped bar chart for pre-aggregated data, replacing sns.barplot."""
+    if ax is None:
+        ax = plt.gca()
+    x_labels = data[x].unique().tolist()
+    hue_vals = data[hue].unique().tolist()
+    n_hue = len(hue_vals)
+    bar_width = 0.8 / n_hue
+    offsets = [(i - n_hue / 2 + 0.5) * bar_width for i in range(n_hue)]
+    x_pos = list(range(len(x_labels)))
+    for j, hue_val in enumerate(hue_vals):
+        subset = data[data[hue] == hue_val].set_index(x)[y].reindex(x_labels, fill_value=0)
+        ax.bar([p + offsets[j] for p in x_pos], subset.values, width=bar_width, label=hue_val)
+    ax.set_xticks(x_pos)
+    ax.set_xticklabels(x_labels)
+    ax.legend(title=hue)
+    return ax
+
+
+def _report_tour_mode_choice_by_auto_suff(context, include_atwork, file_name, title):
+    """Plot the requested tour purposes against their scaled targets.
+
+    Produces a 2x2 grid of subplots — one per auto-sufficiency category plus
+    one aggregated "All" panel — where each bar shows the percent share of
+    tours for each mode.
+    """
     targets = get_targets()
     targets = targets[
         (targets.grouped_tour_mode != "All")
@@ -40,37 +82,139 @@ def _report_tour_mode_choice(context, include_atwork, file_name, title):
     else:
         targets = targets[targets.purpose != "Work sub-tour"]
 
-    comparison_rows = []
-    for target in targets.itertuples(index=False):
-        comparison_rows.append(
-            {
-                "category": f"{target.purpose} | auto sufficiency {target.auto_suff} | {target.grouped_tour_mode}",
-                "model": get_model_value(
-                    context,
-                    target.grouped_tour_mode,
-                    target.auto_suff,
-                    target.purpose,
-                ),
-                "target": get_target_value(
-                    context,
-                    target.grouped_tour_mode,
-                    target.auto_suff,
-                    target.purpose,
-                ),
-            }
-        )
+    auto_suff_values = sorted(targets["auto_suff"].unique().tolist())
+    modes = targets["grouped_tour_mode"].unique().tolist()
+    purposes = targets["purpose"].unique().tolist()
 
-    comparison_df = pd.DataFrame(comparison_rows)
-    comparison_df.plot(x="category", y=["model", "target"], kind="bar")
-    plt.title(title)
-    plt.xlabel("Purpose, Auto Sufficiency, and Tour Mode")
-    plt.ylabel("Tours")
-    plt.legend(title="Data Source")
+    # Build a long-form dataframe with columns: tour_mode, auto_suff, source, tours
+    rows = []
+    for auto_suff in auto_suff_values:
+        for mode in modes:
+            # sum across all purposes for the given auto_suff/mode combination
+            model_val = sum(
+                get_model_value(context, mode, auto_suff, purpose)
+                for purpose in purposes
+            )
+            target_val = sum(
+                get_target_value(context, mode, auto_suff, purpose)
+                for purpose in purposes
+            )
+            rows.append({"tour_mode": mode, "auto_suff": auto_suff, "source": "Survey", "tours": target_val})
+            rows.append({"tour_mode": mode, "auto_suff": auto_suff, "source": "Model", "tours": model_val})
+
+    viz_df = pd.DataFrame(rows)
+
+    # Append an "All" auto-sufficiency group by summing across categories
+    all_rows = viz_df.groupby(["tour_mode", "source"])["tours"].sum().reset_index()
+    all_rows["auto_suff"] = "All"
+    viz_df = pd.concat([viz_df, all_rows], ignore_index=True)
+
+    fig = plt.figure(figsize=(20, 15))
+    plot_idx = 221  # 2-row x 2-col grid, starting at subplot 1
+
+    for auto_suff in auto_suff_values:
+        plt.subplot(plot_idx)
+        data = viz_df[viz_df["auto_suff"] == auto_suff].copy()
+        # convert raw counts to percent share within each source
+        for source, total in data.groupby("source")["tours"].sum().items():
+            data.loc[data["source"] == source, "percent"] = (
+                data.loc[data["source"] == source, "tours"] / total * 100
+            )
+        _grouped_barplot(data, x="tour_mode", y="percent", hue="source")
+        plt.title(f"{title}, Auto Sufficiency: {auto_suff}", fontsize=18)
+        plt.xticks(rotation=90, fontsize=13)
+        plt.yticks(fontsize=16)
+        plt.ylabel("Percent", fontsize=16)
+        plt.xlabel("Tour Mode", fontsize=16)
+        plot_idx += 1
+
+    plt.subplot(plot_idx)
+    data = viz_df[viz_df["auto_suff"] == "All"].copy()
+    for source, total in data.groupby("source")["tours"].sum().items():
+        data.loc[data["source"] == source, "percent"] = (
+            data.loc[data["source"] == source, "tours"] / total * 100
+        )
+    _grouped_barplot(data, x="tour_mode", y="percent", hue="source")
+    plt.title(f"{title}, Auto Sufficiency: All", fontsize=18)
+    plt.xticks(rotation=90, fontsize=13)
+    plt.yticks(fontsize=16)
+    plt.ylabel("Percent", fontsize=16)
+    plt.xlabel("Tour Mode", fontsize=16)
+
     plt.tight_layout()
-    plt.savefig(
-        os.path.join(context["component_output_dir"], file_name)
-    )
+    fig.savefig(os.path.join(context["component_output_dir"], file_name))
     plt.close()
+
+
+def _report_tour_mode_choice_by_purpose(context, include_atwork, file_name_prefix, title_prefix):
+    """Produce 2x2 grid figures of percent mode share, one subplot per purpose."""
+    targets = get_targets()
+    targets = targets[
+        (targets.grouped_tour_mode != "All")
+        & (targets.auto_suff != "All")
+        & (targets.purpose != "Total")
+    ]
+    if include_atwork:
+        targets = targets[targets.purpose == "Work sub-tour"]
+    else:
+        targets = targets[targets.purpose != "Work sub-tour"]
+
+    auto_suff_values = sorted(targets["auto_suff"].unique().tolist())
+    purposes = targets["purpose"].unique().tolist()
+
+    # pack purposes into 2x2 grids, saving as many figures as needed
+    batch_size = 4
+    for batch_idx, batch_start in enumerate(range(0, len(purposes), batch_size)):
+        batch_purposes = purposes[batch_start : batch_start + batch_size]
+        fig, axes = plt.subplots(2, 2, figsize=(20, 15))
+        axes_flat = axes.flatten()
+
+        for i, purpose in enumerate(batch_purposes):
+            modes = targets.loc[
+                targets.purpose == purpose, "grouped_tour_mode"
+            ].unique().tolist()
+
+            rows = []
+            for mode in modes:
+                # sum tours across all auto-sufficiency categories
+                model_val = sum(
+                    get_model_value(context, mode, auto_suff, purpose)
+                    for auto_suff in auto_suff_values
+                )
+                target_val = sum(
+                    get_target_value(context, mode, auto_suff, purpose)
+                    for auto_suff in auto_suff_values
+                )
+                rows.append({"tour_mode": mode, "source": "Survey", "tours": target_val})
+                rows.append({"tour_mode": mode, "source": "Model", "tours": model_val})
+
+            viz_df = pd.DataFrame(rows)
+            for source, total in viz_df.groupby("source")["tours"].sum().items():
+                viz_df.loc[viz_df["source"] == source, "percent"] = (
+                    viz_df.loc[viz_df["source"] == source, "tours"] / total * 100
+                )
+
+            ax = axes_flat[i]
+            _grouped_barplot(viz_df, x="tour_mode", y="percent", hue="source", ax=ax)
+            ax.set_title(f"{title_prefix}: {purpose}", fontsize=18)
+            ax.tick_params(axis="x", rotation=90, labelsize=13)
+            ax.tick_params(axis="y", labelsize=16)
+            ax.set_ylabel("Percent", fontsize=16)
+            ax.set_xlabel("Tour Mode", fontsize=16)
+
+        # hide any unused subplots in the last figure
+        for i in range(len(batch_purposes), batch_size):
+            axes_flat[i].set_visible(False)
+
+        plt.tight_layout()
+        fig.savefig(
+            os.path.join(
+                context["component_output_dir"],
+                f"{file_name_prefix}_by_purpose_{batch_idx + 1}.png",
+            )
+        )
+        plt.close()
+
 
 def _sample_rate(context):
     """

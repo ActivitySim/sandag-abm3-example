@@ -36,7 +36,6 @@ def _survey_households() -> pd.DataFrame:
     return pd.read_csv(os.path.join(SURVEY_DATA_FOLDER, "final_households.csv"))
 
 
-# @lru_cache(maxsize=1)
 def _survey_worker_distances(context):
     """Compute survey worker distances once and reuse across calibration rows."""
 
