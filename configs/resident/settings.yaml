@@ -148,6 +148,9 @@ output_tables:
         TAZ: land_use_taz.TAZ
     - disaggregate_accessibility
 
+
+check_model_settings: True
+
 models:
   ### mp_init_proto_pop (single process)
   - initialize_proto_population # Separate step so proto tables can be split for multiprocess.
