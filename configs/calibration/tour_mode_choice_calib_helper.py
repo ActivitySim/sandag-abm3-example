@@ -274,7 +274,7 @@ def prepare_model_tours(context) -> pd.DataFrame:
 
     # code the tour mode groupings that are defined in the targets file
     # Auto and non-motorized modes already use the target-file names.
-    tours["tour_mode_group"] = tours["tour_mode"].copy()
+    tours["tour_mode_group"] = tours["tour_mode"].copy().astype("string")
     tours.loc[tours.tour_mode.isin(["WALK_LOC", "WALK_PRM", "WALK_MIX"]), "tour_mode_group"] = "WALK-TRANSIT"
     tours.loc[tours.tour_mode.isin(["PNR_LOC", "PNR_PRM", "PNR_MIX"]), "tour_mode_group"] = "PNR-TRANSIT"
     tours.loc[tours.tour_mode.isin(["KNR_LOC", "KNR_PRM", "KNR_MIX"]), "tour_mode_group"] = "KNR-TRANSIT"
