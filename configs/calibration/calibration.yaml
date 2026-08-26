@@ -1,23 +1,13 @@
 enable: True
 run:
   calibrate_models:
-    - workplace_location
     - auto_ownership_simulate
+    - workplace_location
     - tour_mode_choice_simulate
     - atwork_subtour_mode_choice
   global_iterations: 2
-  
-cleanup_pipeline_after_run: false
 
 model_settings:
-  workplace_location:
-    calibration_spec: workplace_location_calibration.csv
-    helper_module: workplace_location_calib_helper.py
-    submodel_max_iterations: 3
-    reports:
-      generic: true
-      bespoke: report_workplace_location
-
   auto_ownership_simulate:
     calibration_spec: auto_ownership_calibration.csv
     helper_module: auto_ownership_calib_helper.py
@@ -25,6 +15,14 @@ model_settings:
     reports:
       generic: true
       bespoke: report_auto_ownership
+
+  workplace_location:
+    calibration_spec: workplace_location_calibration.csv
+    helper_module: workplace_location_calib_helper.py
+    submodel_max_iterations: 3
+    reports:
+      generic: true
+      bespoke: report_workplace_location
 
   tour_mode_choice_simulate:
     calibration_spec: tour_mode_choice_calibration.csv

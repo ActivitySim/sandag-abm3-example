@@ -273,7 +273,8 @@ def prepare_model_tours(context) -> pd.DataFrame:
 
 
     # code the tour mode groupings that are defined in the targets file
-    tours['tour_mode_group'] = tours["tour_mode"].astype(str).copy()  # auto and non-motorized modes have same coding in targets
+    # Auto and non-motorized modes already use the target-file names.
+    tours["tour_mode_group"] = tours["tour_mode"].copy()
     tours.loc[tours.tour_mode.isin(["WALK_LOC", "WALK_PRM", "WALK_MIX"]), "tour_mode_group"] = "WALK-TRANSIT"
     tours.loc[tours.tour_mode.isin(["PNR_LOC", "PNR_PRM", "PNR_MIX"]), "tour_mode_group"] = "PNR-TRANSIT"
     tours.loc[tours.tour_mode.isin(["KNR_LOC", "KNR_PRM", "KNR_MIX"]), "tour_mode_group"] = "KNR-TRANSIT"
@@ -281,9 +282,18 @@ def prepare_model_tours(context) -> pd.DataFrame:
     tours.loc[tours.tour_mode == "TNC_SINGLE", "tour_mode_group"] = "TNC-REG"
     tours.loc[tours.tour_mode == "TNC_SHARED", "tour_mode_group"] = "TNC-SHARED"
     tours.loc[tours.tour_mode == "SCH_BUS", "tour_mode_group"] = "SCHOOLBUS"
-    assert (
-        tours.tour_mode_group.isna().sum() == 0
-    ), f"Tour mode group could not be determined for some tours:\n{tours.loc[tours.tour_mode_group.isna(),['tour_id','person_id','tour_mode']]}"
+    target_modes = set(get_targets()["grouped_tour_mode"].dropna()) - {"All"}
+    invalid_mode = tours.tour_mode_group.isna() | ~tours.tour_mode_group.isin(
+        target_modes
+    )
+    if invalid_mode.any():
+        invalid_tours = tours.loc[
+            invalid_mode, ["tour_id", "person_id", "tour_mode"]
+        ]
+        raise ValueError(
+            "Tour mode group could not be matched to a calibration target for "
+            f"some tours:\n{invalid_tours}"
+        )
 
     # code auto sufficiency category for each tour based on the household's auto ownership and number of adults
     tours = tours.merge(
@@ -388,25 +398,33 @@ def get_target_value(context, mode, auto_suff, purpose):
         & (~targets.grouped_tour_mode.isin(TARGET_TRANSIT_MODES))
     ]["tours"].sum()
 
-    scale_factor = (num_model_tours - num_transit_target_tours) / num_non_transit_target_tours
-
+    total_target_tours = num_transit_target_tours + num_non_transit_target_tours
     if num_non_transit_target_tours == 0:
-        scale_factor = 1.0
+        # There is no non-transit target mass available to absorb the difference
+        # between model and transit totals. Preserve transit targets when they
+        # fit; otherwise scale them down to the model total.
+        if num_transit_target_tours > num_model_tours and total_target_tours > 0:
+            scale_factor = num_model_tours / total_target_tours
+        else:
+            scale_factor = 1.0
+    else:
+        non_transit_scale = (
+            num_model_tours - num_transit_target_tours
+        ) / num_non_transit_target_tours
 
-    # do not scale transit tours under the assumption we want the exact number
-    # of transit tours to match the target.  This is under the assumption that
-    # transit targets were derived independently from on-board survey data and
-    # the model output should match the actual number, not the share.
-    if mode in TARGET_TRANSIT_MODES and scale_factor > 0:
-        scale_factor = 1.0
-
-    # if number of transit target tours exceeds the total number of model tours,
-    # we can't scale the non-transit target tours to match the model total while
-    # keeping transit constant.  In this case, we will scale the transit tours
-    # too such that the share across the modes is preserved, but the total
-    # number of tours matches the model total.
-    if scale_factor < 0:
-        scale_factor = num_model_tours / (num_transit_target_tours + num_non_transit_target_tours)
+        # If transit targets exceed the model total, scaling only non-transit
+        # tours would require a negative factor. Scale every mode instead.
+        if non_transit_scale < 0:
+            scale_factor = (
+                num_model_tours / total_target_tours
+                if total_target_tours > 0
+                else 1.0
+            )
+        elif mode in TARGET_TRANSIT_MODES:
+            # Otherwise preserve the independently derived transit counts.
+            scale_factor = 1.0
+        else:
+            scale_factor = non_transit_scale
 
     category_target = targets.loc[
         (targets.auto_suff == auto_suff)

@@ -1,6 +1,6 @@
 description,coefficient,model_value,target_value,hold_fast,min,max,damping,method,tolerance
-Distance 0 to 2 mi share,coef_distance_0_2miles,"summarize_model(context, min_dist=0, max_dist=2)",0.140469,FALSE,-5,5,1,log_ratio,0.01
-Distance 5 to 10 mi share,coef_distance_5_10miles,"summarize_model(context, min_dist=5, max_dist=10)",0.264097,FALSE,-5,5,1,log_ratio,0.01
-Distance 10 to 20 mi share,coef_distance_10_20miles,"summarize_model(context, min_dist=10, max_dist=20)",0.303669,FALSE,-5,5,1,log_ratio,0.01
-Distance 20 to 30 mi share,coef_distance_20_30miles,"summarize_model(context, min_dist=20, max_dist=30)",0.083825,FALSE,-5,5,1,log_ratio,0.01
-Distance 30+ mi share,coef_distance_30plusmiles,"summarize_model(context, min_dist=30, max_dist=999)",0.034564,FALSE,-5,5,1,log_ratio,0.01
+Distance 0 to 2 mi share,coef_distance_0_2miles,"summarize_model(context, min_dist=0, max_dist=2)",0.140469,FALSE,-15,15,1,log_ratio,0.01
+Distance 5 to 10 mi share,coef_distance_5_10miles,"summarize_model(context, min_dist=5, max_dist=10)",0.264097,FALSE,-15,15,1,log_ratio,0.01
+Distance 10 to 20 mi share,coef_distance_10_20miles,"summarize_model(context, min_dist=10, max_dist=20)",0.303669,FALSE,-15,15,1,log_ratio,0.01
+Distance 20 to 30 mi share,coef_distance_20_30miles,"summarize_model(context, min_dist=20, max_dist=30)",0.083825,FALSE,-15,15,1,log_ratio,0.01
+Distance 30+ mi share,coef_distance_30plusmiles,"summarize_model(context, min_dist=30, max_dist=999)",0.034564,FALSE,-15,15,1,log_ratio,0.01
