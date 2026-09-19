@@ -129,6 +129,24 @@ def test_invalid_extension_settings_fail(checker_state, tmp_path, model, broken_
         assert "missing_checker_test_file.csv" in log
 
 
+def test_invalid_av_ownership_logit_type_fails(checker_state, tmp_path):
+    """Reject an unsupported logit type with a model-specific diagnostic."""
+    model = "av_ownership"
+    baseline, _ = checker_state(models=[model])
+    config = baseline.filesystem.read_model_settings("av_ownership.yaml", mandatory=True)
+    config["LOGIT_TYPE"] = "BAD"
+    overlay = tmp_path / "configs"
+    overlay.mkdir()
+    (overlay / "av_ownership.yaml").write_text(yaml.safe_dump(config))
+    state, registry = checker_state(models=[model], overlay=overlay)
+    with pytest.raises(ModelConfigurationError):
+        _check(state, registry)
+    log = (tmp_path / "settings_checker.log").read_text()
+    assert f"Error checking settings for {model}" in log
+    assert "LOGIT_TYPE" in log
+    assert "BAD" in log
+
+
 def test_inactive_extensions_need_no_settings_files(checker_state, monkeypatch):
     """Keep airport/student code without requiring unused configuration files."""
     state, registry = checker_state()

@@ -1,8 +1,6 @@
 # ActivitySim
 # See full license in LICENSE.txt.
 import os
-import subprocess
-import sys
 from pathlib import Path
 import shutil
 
