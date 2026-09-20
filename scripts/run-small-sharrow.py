@@ -3,11 +3,9 @@
 # /// script
 # requires-python = ">=3.10,<3.12"
 # dependencies = [
-#   "activitysim >=1.5,<2.0",
-#   "sharrow >=2.15",
+#   "activitysim >=1.6.0,<2.0",
+#   "sharrow >=2.16.2",
 # ]
-# [tool.uv]
-# exclude-newer = "2025-11-01T00:00:00Z"
 # ///
 
 """
