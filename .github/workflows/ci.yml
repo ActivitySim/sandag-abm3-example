@@ -17,8 +17,12 @@ jobs:
     defaults:
       run:
         shell: bash -l {0}
-    name: linux-64
+    name: linux-64 (${{ matrix.dependencies }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        dependencies: [releases, main]
     steps:
       # checkout the code in this repository
       - uses: actions/checkout@v4
@@ -38,6 +42,33 @@ jobs:
       - name: Install everything
         run: |
           uv sync --locked
+
+      - name: Check out ActivitySim main
+        if: matrix.dependencies == 'main'
+        uses: actions/checkout@v4
+        with:
+          repository: ActivitySim/activitysim
+          ref: main
+          path: cloned/activitysim
+          fetch-depth: 0
+
+      - name: Check out Sharrow main
+        if: matrix.dependencies == 'main'
+        uses: actions/checkout@v4
+        with:
+          repository: ActivitySim/sharrow
+          ref: main
+          path: cloned/sharrow
+          fetch-depth: 0
+
+      - name: Install ActivitySim and Sharrow main
+        if: matrix.dependencies == 'main'
+        run: |
+          uv pip install --reinstall-package activitysim --reinstall-package sharrow \
+            ./cloned/activitysim ./cloned/sharrow
+
+      - name: Report dependency versions
+        run: uv pip show activitysim sharrow
 
       - name: Test this implementation
         run: |
