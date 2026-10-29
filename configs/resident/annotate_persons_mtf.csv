@@ -8,3 +8,7 @@ number of mandatory tours for each person,num_mand,"_PERSON_TOUR_COUNT('tour_cat
 number of work tours for each person,num_work_tours,"_PERSON_TOUR_COUNT('tour_type==%s' % _Q('work'), persons, tours).fillna(0)"
 presence of pre school kid with mandatory tours,has_pre_school_child_with_mandatory,"other_than(persons.household_id, (persons.ptype == 8) & (num_mand > 0))"
 presense of driving age school children with mandatory tours,has_driving_age_child_with_mandatory,"other_than(persons.household_id, (persons.ptype == 6) & (num_mand > 0))"
+Legible label of telework arrangement on the simulation day,telework_arrangement,'not working'
+Teleworking on the simulation day,telework_arrangement,"np.where((num_work_tours==0)&(persons.get('has_in_home_work_activity')), 'teleworking', telework_arrangement)"
+Commuting on the simulation day,telework_arrangement,"np.where((num_work_tours>0)&(~persons.get('has_in_home_work_activity'))&(persons.get('is_worker')), 'commuting', telework_arrangement)"
+Hybrid working on the simulation day,telework_arrangement,"np.where((num_work_tours>0)&(persons.get('has_in_home_work_activity')), 'hybrid working', telework_arrangement)"

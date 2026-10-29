@@ -1,0 +1,20 @@
+# CHOICE_MODEL: PROBABILISTIC
+CHOICE_MODEL: LOGIT
+
+# Worker filters: apply only to workers with in-home work activity.
+CHOOSER_FILTER_COLUMN_NAME: has_in_home_work_activity
+
+# Shared alternatives for both model types.
+ALTS: telework_duration_alts.csv
+ALT_NAME_COLUMN: alt
+ALT_DURATION_COLUMN: duration_hours
+
+# Probabilistic configuration.
+PROBS_SPEC: telework_duration_probs.csv
+PROBS_JOIN_COLS: 
+  - ptype
+
+# LOGIT configuration (used when CHOICE_MODEL: LOGIT).
+SPEC: telework_duration.csv
+COEFFICIENTS: telework_duration_coeffs.csv
+LOGIT_TYPE: MNL

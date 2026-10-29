@@ -1,0 +1,16 @@
+coefficient_name,value,constrain
+coef_acs_3_5,-1.71,F
+coef_acs_5_7,-1.80,F
+coef_asc_9_plus,-1.53,F
+coef_dummy_missing_workplace_3_5,1.7,F
+coef_dummy_missing_workplace_5_7,1.28,F
+coef_hybrid_7_plus,-6.70,F
+coef_income_150_plus_3_7,-0.194,F
+coef_intrazonal_3_5,0.495,F
+coef_part_time_3_5,2,F
+coef_part_time_5_7,1.85,F
+coef_part_time_9_plus,-1.64,F
+coef_university_student_3_5,2.16,F
+coef_university_student_5_7,1.85,F
+coef_work_from_home_9_plus,-0.264,F
+coef_workplace_mc_logsum_3_7,0.0624,F

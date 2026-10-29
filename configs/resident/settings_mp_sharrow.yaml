@@ -45,8 +45,9 @@ models:
   - transponder_ownership
   - free_parking
   - telecommute_frequency
-  - telecommute_status
   - cdap_simulate
+  - telework_arrangement
+  - telework_duration
   - mandatory_tour_frequency
   - mandatory_tour_scheduling
   - school_escorting
